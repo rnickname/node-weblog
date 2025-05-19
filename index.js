@@ -1,55 +1,31 @@
 const express = require('express')
-const birdsRoute = require('./routes/birds.route')
 const sequelize = require('./database/Sequelize-connect')
-const User = require('./models/user.model')
+const authRoutes = require('./routes/auth.route')
+const userRoute = require('./routes/user.route')
+const homeRoute = require('./routes/home.route')
+const path = require('path')
+const cookieParser = require('cookie-parser');
+
 
 const app = express()
 const port = 3000
-app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser());
+app.use(express.json());
 
 
-app.get('/', async (req, res) => {
-    const users = await User.findAll();
-    res.send(users)
-})
-
-app.get('/create-user', async (req, res) => {
-    const user = await User.create({ firstName: 'Jane', lastName: 'Doe', email: 'info@Jane.com', password: 'admin123' });
-    res.send(user)
-})
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
 
 
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body
-
-    console.log({ email })
-
-    const user = await User.findOne({
-        where: {
-            email
-        }
-    })
-
-    console.log(user)
-
-    if (user) {
-        if (user.password == password) {
-            res.send("hi to panel")
-        } else {
-            res.send("password inccorect")
-        }
-    }
-    else {
-        res.send("user not found")
-    }
-})
-
-// app.use('/birds', birdsRoute)
+app.use('/auth', authRoutes)
+app.use('/user', userRoute)
+app.use('/', homeRoute)
 
 app.listen(port, async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
         console.log('Connection has been established successfully.');
         console.log(`Example app listening on port ${port}`)
     } catch (error) {

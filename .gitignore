@@ -7,3 +7,4 @@ node_modules/
 
 database/Sequelize-connect.js
 database-creds.sql
+resend.js

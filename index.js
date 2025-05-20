@@ -12,7 +12,7 @@ const port = 3000
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(express.static(path.join(__dirname, 'statics')))
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))

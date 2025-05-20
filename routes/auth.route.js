@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-    const { email, password, lastName, firstName } = req.body
+    const { email, password, lastName, firstName, username } = req.body
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.findOne({
@@ -89,9 +89,9 @@ router.post('/register', async (req, res) => {
             firstName,
             lastName,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            username
         });
-        // res.send('user registered')
         return res.json({ message: "successful registration, now redirecting to login page..." });
     }
 })

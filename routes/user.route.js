@@ -20,7 +20,7 @@ router.get('/profile', async (req, res) => {
                     }
                 })
                 if(user){
-                    res.render('profile', {user: {name: user.firstName, email: user.email}})
+                    res.render('profile', {user: {name: user.firstName + " " + user.lastName, email: user.email, username: user.username, createdAt: user.createdAt, firstName: user.firstName , lastName: user.lastName, bio: user.bio}})
                 } else{
                     res.redirect('/auth/login')
                 }

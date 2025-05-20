@@ -22,7 +22,7 @@ app.use('/auth', authRoutes)
 app.use('/user', userRoute)
 app.use('/', homeRoute)
 
-app.listen(port, async () => {
+app.listen(port, '0.0.0.0', async () => {
     try {
         await sequelize.authenticate();
         await sequelize.sync();

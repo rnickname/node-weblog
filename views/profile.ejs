@@ -177,7 +177,14 @@
             </p>
             <p class="profile-last-seen">Last seen <%= user.lastSeen || 'N/A' %>
             </p>
-            <button class="btn btn-outline-primary rounded-pill">Change Photo</button>
+            <!-- <button class="btn btn-outline-primary rounded-pill">Change Photo</button> -->
+            <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
+              <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" class="d-none">
+              <button type="button" class="btn btn-outline-primary rounded-pill"
+                onclick="document.getElementById('profilePicInput').click()">
+                Change Photo
+              </button>
+            </form>
           </div>
         </div>
 
@@ -198,15 +205,17 @@
 
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-            <form>
+            <form action="/user/profile" method="post">
               <div class="row mb-3">
                 <div class="col-md-6 mb-3">
                   <label for="firstName" class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="firstName" value="<%= user.firstName || '' %>">
+                  <input type="text" class="form-control" id="firstName" name="firstName"
+                    value="<%= user.firstName || '' %>">
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName" class="form-label">Last Name</label>
-                  <input type="text" class="form-control" id="lastName" value="<%= user.lastName || '' %>">
+                  <input type="text" class="form-control" id="lastName" name="lastName"
+                    value="<%= user.lastName || '' %>">
                 </div>
                 <div class="col-md-6">
                   <label for="username" class="form-label">Username</label>
@@ -219,7 +228,7 @@
               </div>
               <div class="mb-4">
                 <label for="about" class="form-label">About</label>
-                <textarea class="form-control" id="about" rows="4"><%= user.bio || 'My Bio' %></textarea>
+                <textarea class="form-control" id="about" name="bio" rows="4"><%= user.bio || 'My Bio' %></textarea>
               </div>
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -227,18 +236,19 @@
             </form>
           </div>
           <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
-            <form>
+            <div id="passwordMessageAlert" class="alert" style="display: none;" role="alert"></div>
+            <form id="passwordForm">
               <div class="mb-3">
                 <label for="currentPassword" class="form-label">Current Password</label>
-                <input type="password" class="form-control" id="currentPassword">
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
               </div>
               <div class="mb-3">
                 <label for="newPassword" class="form-label">New Password</label>
-                <input type="password" class="form-control" id="newPassword">
+                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
               </div>
               <div class="mb-4">
                 <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                <input type="password" class="form-control" id="confirmNewPassword">
+                <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
               </div>
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -246,13 +256,106 @@
             </form>
           </div>
           <div class="tab-pane fade" id="logout" role="tabpanel" aria-labelledby="logout-tab">
-            <p>Logout options will go here.</p>
+            <div class="text-center mt-4">
+              <h4>Logout</h4>
+              <p class="mb-4">Are you sure you want to logout?</p>
+              <form action="/user/logout" method="get">
+                <button type="submit" class="btn btn-danger btn-lg px-5">Logout</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.getElementById('profilePicInput').addEventListener('change', async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type and size
+        if (!file.type.startsWith('image/')) {
+          alert('Please upload an image file');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          alert('File size must be less than 5MB');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('profile_pic', file);
+
+        try {
+          const response = await fetch('/user/profile', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error('Upload failed');
+          }
+
+          const result = await response.json();
+          if (result.success) {
+            // Refresh the page to show new image
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          alert('Failed to upload image. Please try again.');
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('passwordForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = {
+          currentPassword: document.getElementById('currentPassword').value,
+          newPassword: document.getElementById('newPassword').value,
+          confirmNewPassword: document.getElementById('confirmNewPassword').value
+        };
+
+        try {
+          const response = await fetch('/user/profile/updatePassword', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+
+          const result = await response.json();
+          const alertElement = document.getElementById('passwordMessageAlert');
+
+          if (response.ok) {
+            alertElement.className = 'alert alert-success';
+            alertElement.textContent = result.message;
+            // Reset form on success
+            this.reset();
+          } else {
+            alertElement.className = 'alert alert-danger';
+            alertElement.textContent = result.message;
+          }
+
+          alertElement.style.display = 'block';
+
+          // Hide the alert after 5 seconds
+          setTimeout(() => {
+            alertElement.style.display = 'none';
+          }, 5000);
+
+        } catch (error) {
+          console.error('Error:', error);
+          const alertElement = document.getElementById('passwordMessageAlert');
+          alertElement.className = 'alert alert-danger';
+          alertElement.textContent = 'An error occurred. Please try again.';
+          alertElement.style.display = 'block';
+        }
+      });
+    </script>
 </body>
 
 </html>

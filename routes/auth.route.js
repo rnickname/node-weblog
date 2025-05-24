@@ -138,8 +138,8 @@ router.post('/forgot-password', async (req, res) => {
 
 router.post('/forgot-password/:token', async (req, res) => {
     const { token } = req.params
-    const { newPassword } = req.body;
-    const { confirmPassword } = req.body;
+    const { newPassword, confirmPassword } = req.body;
+    // const { confirmPassword } = req.body;
 
     if (!token || !newPassword || !confirmPassword) {
         return res.status(400).json({ message: 'Token and new password are required' });

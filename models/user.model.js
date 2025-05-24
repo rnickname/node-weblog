@@ -35,10 +35,15 @@ const User = sequelize.define('User', {
             this.setDataValue('username', value ? value.toLowerCase() : '');
         }
     },
-    lastName: {
+    bio: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
+    },
+    profile_pic: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
+
 }, {},);
 
 module.exports = User;

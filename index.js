@@ -25,7 +25,9 @@ app.use('/', homeRoute)
 app.listen(port, '0.0.0.0', async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync();
+        await sequelize.sync(
+            // { force: true }
+        );
         console.log('Connection has been established successfully.');
         console.log(`Example app listening on port ${port}`)
     } catch (error) {

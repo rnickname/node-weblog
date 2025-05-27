@@ -1,5 +1,6 @@
 const express = require('express')
 const sequelize = require('./database/Sequelize-connect')
+const { User, Post } = require('./models');
 const authRoutes = require('./routes/auth.route')
 const userRoute = require('./routes/user.route')
 const homeRoute = require('./routes/home.route')

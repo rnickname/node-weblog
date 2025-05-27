@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
     }
 
     const payload = {
-        id: user.id, // Use `id`, not `_id` (you're using Sequelize, not Mongoose)
+        id: user.id,
         email: user.email
     };
 

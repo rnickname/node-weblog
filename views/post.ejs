@@ -1,0 +1,15 @@
+<%- include('header', {title: post.title }) %>
+<div class="container my-5">
+  <h1><%= post.title %></h1>
+  <p class="text-muted">
+    By <%= post.author ? post.author.firstName + ' ' + post.author.lastName : 'Unknown' %>
+    • <%= new Date(post.createdAt).toLocaleDateString('en-US') %>
+  </p>
+  <% if (post.cover_img) { %>
+    <img src="<%= post.cover_img %>" class="img-fluid mb-4" alt="Cover Image">
+  <% } %>
+  <div>
+    <%= post.content %>
+  </div>
+</div>
+<%- include('footer') %>

@@ -12,8 +12,8 @@ const requireAuth = (req, res, next) => {
                 console.log('Invalid token');
                 res.redirect('/auth/login')
             } if (decoded) {
-                res.locals.decoded = decoded
-                next()
+                res.locals.decoded = decoded;
+                next();
             }
         }
     )} else{

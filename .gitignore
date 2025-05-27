@@ -9,5 +9,5 @@ database/Sequelize-connect.js
 database-creds.sql
 resend.js
 
-statics/user_profiles/*
-!statics/user_profiles/.gitkeep
+statics/user_files/*
+!statics/user_files/.gitkeep

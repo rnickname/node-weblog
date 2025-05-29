@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 40px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-tab {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            color: #333;
+        }
+
+        .nav-tab.active {
+            color: #333;
+            border-bottom-color: #007bff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            color: #333;
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 20px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Admin Panel</h1>
+        <!-- <div class="nav-tabs">
+            <a href="/admin" class="nav-tab">Posts</a>
+            <a href="/admin" class="nav-tab active">Users</a>
+        </div> -->
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 class="form-title">Edit User</h2>
+            
+            <form action="/admin/users/edit/<%= typeof user !== 'undefined' ? user.id : '' %>" method="POST">
+                <div class="form-group">
+                    <label for="name" class="form-label">first Name</label>
+                    <input 
+                        type="text" 
+                        id="firstName" 
+                        name="firstName" 
+                        class="form-input" 
+                        placeholder="Enter user's first name"
+                        value="<%= typeof user !== 'undefined' ? user.firstName : '' %>"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="name" class="form-label">last Name</label>
+                    <input 
+                        type="text" 
+                        id="lastName" 
+                        name="lastName" 
+                        class="form-input" 
+                        placeholder="Enter user's last name"
+                        value="<%= typeof user !== 'undefined' ? user.lastName : '' %>"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="name" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Enter user's Username"
+                        value="<%= typeof user !== 'undefined' ? user.username : '' %>"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter user's email"
+                        value="<%= typeof user !== 'undefined' ? user.email : '' %>"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="role" class="form-label">Role</label>
+                    <select id="role" name="role" class="form-select" required>
+                        <option value="admin" <%= typeof user !== 'undefined' && user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                        <option value="user" <%= typeof user !== 'undefined' && user.role === 'user' ? 'selected' : '' %>>User</option>
+                    </select>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-select" required>
+                        <option value="Active" <%= typeof user !== 'undefined' && user.status === 'Active' ? 'selected' : '' %>>Active</option>
+                        <option value="Inactive" <%= typeof user !== 'undefined' && user.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                        <option value="Suspended" <%= typeof user !== 'undefined' && user.status === 'Suspended' ? 'selected' : '' %>>Suspended</option>
+                    </select>
+                </div> -->
+
+                <div class="form-actions">
+                    <a href="/admin" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Add error styling
+    const styles = `
+        .form-input.error {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+    `;
+    document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Reset previous errors
+        document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+        document.querySelectorAll('.form-input').forEach(input => input.classList.remove('error'));
+
+        // Get form data
+        const formData = {
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            role: document.getElementById('role').value
+        };
+
+        // Validation rules
+        const validations = {
+            firstName: {
+                test: value => value.length >= 2 && value.length <= 50,
+                message: 'First name must be between 2 and 50 characters'
+            },
+            lastName: {
+                test: value => value.length >= 2 && value.length <= 50,
+                message: 'Last name must be between 2 and 50 characters'
+            },
+            username: {
+                test: value => /^[a-zA-Z0-9_]{3,20}$/.test(value),
+                message: 'Username must be 3-20 characters and contain only letters, numbers, and underscores'
+            },
+            email: {
+                test: value => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value),
+                message: 'Please enter a valid email address'
+            },
+            role: {
+                test: value => ['admin', 'user'].includes(value),
+                message: 'Please select a valid role'
+            }
+        };
+
+        // Validate all fields
+        let hasErrors = false;
+        Object.keys(validations).forEach(field => {
+            const input = document.getElementById(field);
+            if (!validations[field].test(formData[field])) {
+                showError(input, validations[field].message);
+                hasErrors = true;
+            }
+        });
+
+        if (hasErrors) return;
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                window.location.href = '/admin';
+            } else {
+                throw new Error(data.message || 'Update failed');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    });
+
+    // Error display helper
+    function showError(input, message) {
+        input.classList.add('error');
+        
+        // Create or update error message
+        let errorDiv = input.parentNode.querySelector('.error-message');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            input.parentNode.appendChild(errorDiv);
+        }
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    // Real-time validation feedback
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('error');
+            const errorMessage = this.parentNode.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

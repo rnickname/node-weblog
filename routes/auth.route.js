@@ -5,7 +5,9 @@ const ResetPassword = require('../models/reset-password.model')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-
+const { Resend } = require('resend');
+require('dotenv').config();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function generateResetToken() {
     const token = crypto.randomBytes(32).toString('hex'); // 64-character token
@@ -110,7 +112,6 @@ router.post('/forgot-password', async (req, res) => {
                 email
             }
         })
-        // console.log({ reset_token })
         if (reset_token) {
             if (new Date(reset_token.expires) > new Date()) {
                 return res.status(400).json({
@@ -128,7 +129,25 @@ router.post('/forgot-password', async (req, res) => {
             expires: new Date(expires)
         })
 
-        console.log({ "reset password token": token })
+        try {
+            const resetLink = `${req.protocol}://${req.get('host')}/auth/forgot-password/${token}`;
+            await resend.emails.send({
+                from: 'Transactional <noreply@transactional.lasf.online>',
+                to: email,
+                subject: 'Password Reset Request',
+                html: `
+                    <h1>Password Reset Request</h1>
+                    <p>You requested to reset your password. Click the link below to reset it:</p>
+                    <p><a href="${resetLink}">${resetLink}</a></p>
+                    <p>This link will expire in 10 minutes.</p>
+                    <p>If you didn't request this, please ignore this email.</p>
+                `
+            });
+        } catch (error) {
+            console.error('Error sending reset password email:', error);
+            // Don't expose the error to the user
+            console.log({ "reset password token": token })
+        }
         return res.json({ message: "If an account with that email address exists, a password reset link has been sent." });
     } else {
         console.log(`Forgot password attempt for non-existent email: ${email}`);
